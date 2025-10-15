@@ -8,15 +8,20 @@ var scoreboard : RichTextLabel
 @export var speed := 1
 var is_scoring := false
 
-# TODO
-func count_score(pieces: Array[PuzzlePiece]) -> void:
+func count_score_from_piece(piece: PuzzlePiece) -> void:
 	is_scoring = true
 	
-	for piece in pieces:
-		await piece.trigger_scoring()
-		current_score += piece.piece_value
-	update_score_visuals(current_score)
+	# Trigger the clicked piece first and add its score
+	await piece.trigger_piece()
+	current_score += piece.piece_value
 	
+	# Get all connected pieces within range and trigger them
+	var pieces_to_trigger = piece.get_connected_pieces_in_range(piece.trigger_range)
+	for next_piece in pieces_to_trigger:
+		await next_piece.trigger_piece()
+		current_score += next_piece.piece_value
+	
+	update_score_visuals(current_score)
 	is_scoring = false
 
 func init_scoreboard(scoreboard_node: RichTextLabel) -> void:

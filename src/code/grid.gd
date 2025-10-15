@@ -27,23 +27,49 @@ func place_piece(grid_pos: Vector2i, piece: GridElement) -> void:
 		old_cell.queue_free()
 	
 	add_to_grid(grid_pos, piece)
+	connect_pieces(grid_pos, piece)
+	Score.count_score_from_piece(piece)
 	create_connected_empty_cells(piece.grid_index)
-	start_scoring()
+
+func connect_pieces(grid_pos: Vector2i, piece: PuzzlePiece) -> void:
+	for direction in piece.directions:
+		var neighbor_pos: Vector2i
+		var required_opposite_direction: String
+		
+		match direction:
+			"u":
+				neighbor_pos = grid_pos + Vector2i.UP
+				required_opposite_direction = "d"
+			"r":
+				neighbor_pos = grid_pos + Vector2i.RIGHT
+				required_opposite_direction = "l"
+			"d":
+				neighbor_pos = grid_pos + Vector2i.DOWN
+				required_opposite_direction = "u"
+			"l":
+				neighbor_pos = grid_pos + Vector2i.LEFT
+				required_opposite_direction = "r"
+			_:
+				continue
+		
+		# Check if neighbor exists and is a PuzzlePiece
+		if grid.has(neighbor_pos):
+			var neighbor = grid[neighbor_pos]
+			if is_instance_of(neighbor, PuzzlePiece):
+				var neighbor_piece: PuzzlePiece = neighbor as PuzzlePiece
+				
+				# Only connect if neighbor has the opposite direction
+				if required_opposite_direction in neighbor_piece.directions:
+					# Make bidirectional connection
+					piece.connected_pieces.append(neighbor_piece)
+					if piece not in neighbor_piece.connected_pieces:
+						neighbor_piece.connected_pieces.append(piece)
 
 func place_starter_piece() -> void:
 	var piece := PieceMaker.create_piece()
 	add_to_grid(Vector2i.ZERO, piece)
 	create_connected_empty_cells(piece.grid_index)
 
-func collect_scoring_pieces_in_order() -> Array[PuzzlePiece]:
-	return get_puzzle_pieces()
-
-func get_puzzle_pieces() -> Array[PuzzlePiece]:
-	var returnage: Array[PuzzlePiece] = []
-	for element in grid.values():
-		if element is PuzzlePiece:
-			returnage.append(element as PuzzlePiece)
-	return returnage
 
 # ============================================================
 # EMPTY CELLS
@@ -81,15 +107,16 @@ func get_adjacent_cells(grid_pos: Vector2i) -> Array:
 	adjacent_cells.append(grid_pos + Vector2i.DOWN)  # down
 	adjacent_cells.append(grid_pos + Vector2i.UP)  # up
 	return adjacent_cells
-
-# TODO
-func get_connected_cells(grid_pos: Vector2i) -> Array:
-	var adjacent_cells = []
-	adjacent_cells.append(grid_pos + Vector2i.RIGHT)   # right
-	adjacent_cells.append(grid_pos + Vector2i.LEFT)  # left
-	adjacent_cells.append(grid_pos + Vector2i.DOWN)  # down
-	adjacent_cells.append(grid_pos + Vector2i.UP)  # up
-	return adjacent_cells
+#
+## TODO
+#func get_connected_pieces(directions: Array[String]) -> Array:
+	#var connected_pieces = []
+	#if "u" in directions:
+		#connected_pieces.append(grid_pos + Vector2i.RIGHT)   # right
+	#connected_pieces.append(grid_pos + Vector2i.LEFT)  # left
+	#connected_pieces.append(grid_pos + Vector2i.DOWN)  # down
+	#connected_pieces.append(grid_pos + Vector2i.UP)  # up
+	#return connected_pieces
 
 func add_to_grid(grid_pos: Vector2i, grid_element: GridElement) -> bool:
 	if grid.has(grid_pos) and is_instance_of(grid[grid_pos], PuzzlePiece):
@@ -108,7 +135,3 @@ func add_to_grid(grid_pos: Vector2i, grid_element: GridElement) -> bool:
 func _on_piece_clicked(at_position: Vector2i) -> void:
 	var piece := PieceMaker.create_piece()
 	place_piece(at_position, piece)
-
-func start_scoring() -> void:
-	Score.count_score(collect_scoring_pieces_in_order())
-	pass
