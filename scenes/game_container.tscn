@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://c5pcxr5fail1v"]
+
+[ext_resource type="Shader" uid="uid://ctqq4atbd40kp" path="res://scenes/background_balatroesque.gdshader" id="1_sfwqv"]
+[ext_resource type="PackedScene" uid="uid://d31wsl7vxu1wk" path="res://scenes/grid.tscn" id="2_qs8ir"]
+[ext_resource type="PackedScene" uid="uid://cnindpnhm24j7" path="res://scenes/score_visuals.tscn" id="3_mqaqf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qs8ir"]
+shader = ExtResource("1_sfwqv")
+shader_parameter/flow_speed = 0.8
+shader_parameter/turbulence = 1.5
+shader_parameter/detail_scale = 3.0
+shader_parameter/color_1 = Color(0.8, 0.6, 0.85, 1)
+shader_parameter/color_2 = Color(0.6, 0.75, 0.95, 1)
+shader_parameter/color_3 = Color(0.832838, 0.563293, 0.598733, 1)
+shader_parameter/color_4 = Color(0.96534, 0.84233, 0.849437, 1)
+shader_parameter/glow_intensity = 0.4
+shader_parameter/contrast = 2.0
+shader_parameter/pixel_filter = 740.0
+shader_parameter/animate = true
+
+[node name="GameContainer" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Camera2D"]
+z_index = -10
+material = SubResource("ShaderMaterial_qs8ir")
+custom_minimum_size = Vector2(1152, 648)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Grid" parent="." instance=ExtResource("2_qs8ir")]
+
+[node name="ScoreVisuals" parent="." instance=ExtResource("3_mqaqf")]

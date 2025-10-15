@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnindpnhm24j7"]
+
+[ext_resource type="Script" uid="uid://ds3wtu4sf72y4" path="res://src/code/score_visuals.gd" id="1_7w728"]
+
+[node name="ScoreVisuals" type="Node2D"]
+script = ExtResource("1_7w728")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
