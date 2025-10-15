@@ -21,6 +21,12 @@ func place_piece(grid_pos: Vector2i, piece: GridElement) -> void:
 	if grid_pos in grid and not is_instance_of(grid[grid_pos], EmptyCell):
 		return
 	
+	# Validate that the piece can connect to at least one neighbor
+	if is_instance_of(piece, PuzzlePiece):
+		if not can_place_piece_at(grid_pos, piece as PuzzlePiece):
+			print("Cannot place piece at", grid_pos, "- no valid connections")
+			return
+	
 	# Remove the old empty cell if it exists
 	if grid_pos in grid and is_instance_of(grid[grid_pos], EmptyCell):
 		var old_cell = grid[grid_pos]
@@ -30,6 +36,38 @@ func place_piece(grid_pos: Vector2i, piece: GridElement) -> void:
 	connect_pieces(grid_pos, piece)
 	Score.count_score_from_piece(piece)
 	create_connected_empty_cells(piece.grid_index)
+
+func can_place_piece_at(grid_pos: Vector2i, piece: PuzzlePiece) -> bool:
+	# Check if at least one direction has a valid connection
+	for direction in piece.directions:
+		var neighbor_pos: Vector2i
+		var required_opposite_direction: String
+		
+		match direction:
+			"u":
+				neighbor_pos = grid_pos + Vector2i.UP
+				required_opposite_direction = "d"
+			"r":
+				neighbor_pos = grid_pos + Vector2i.RIGHT
+				required_opposite_direction = "l"
+			"d":
+				neighbor_pos = grid_pos + Vector2i.DOWN
+				required_opposite_direction = "u"
+			"l":
+				neighbor_pos = grid_pos + Vector2i.LEFT
+				required_opposite_direction = "r"
+			_:
+				continue
+		
+		# Check if neighbor exists and has matching direction
+		if grid.has(neighbor_pos):
+			var neighbor = grid[neighbor_pos]
+			if is_instance_of(neighbor, PuzzlePiece):
+				var neighbor_piece: PuzzlePiece = neighbor as PuzzlePiece
+				if required_opposite_direction in neighbor_piece.directions:
+					return true  # Found at least one valid connection
+	
+	return false  # No valid connections found
 
 func connect_pieces(grid_pos: Vector2i, piece: PuzzlePiece) -> void:
 	for direction in piece.directions:
@@ -79,10 +117,33 @@ func place_empty_cell(grid_pos: Vector2i, cell: EmptyCell):
 
 
 func create_connected_empty_cells(grid_pos: Vector2i) -> void:
-	var adjacent_cells = get_adjacent_cells(grid_pos)
-	for cell in adjacent_cells:
-		create_empty_cell(cell)
-	pass
+	# Only create empty cells where the piece at grid_pos has connection directions
+	if not grid.has(grid_pos):
+		return
+	
+	var piece = grid[grid_pos]
+	if not is_instance_of(piece, PuzzlePiece):
+		return
+	
+	var puzzle_piece: PuzzlePiece = piece as PuzzlePiece
+	
+	# Only create empty cells in directions where the piece has tabs
+	for direction in puzzle_piece.directions:
+		var neighbor_pos: Vector2i
+		
+		match direction:
+			"u":
+				neighbor_pos = grid_pos + Vector2i.UP
+			"r":
+				neighbor_pos = grid_pos + Vector2i.RIGHT
+			"d":
+				neighbor_pos = grid_pos + Vector2i.DOWN
+			"l":
+				neighbor_pos = grid_pos + Vector2i.LEFT
+			_:
+				continue
+		
+		create_empty_cell(neighbor_pos)
 
 func create_adjacent_empty_cells(grid_pos: Vector2i) -> void:
 	var adjacent_cells = get_adjacent_cells(grid_pos)

@@ -4,7 +4,7 @@ extends GridElement
 @export var trigger_range := 3
 @export var piece_value := 1
 
-@export var directions := ["u", "r", "d"]
+@export var directions := ["u", "r", "d", "l"]
 var connected_pieces : Array[PuzzlePiece]
 
 func handle_mouse_input(event: InputEvent) -> void:
