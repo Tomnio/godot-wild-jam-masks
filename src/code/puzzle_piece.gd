@@ -5,7 +5,11 @@ extends GridElement
 @export var piece_value := 1
 
 @export var directions := ["u", "r", "d", "l"]
+@export var number_of_connections := 2
 var connected_pieces : Array[PuzzlePiece]
+
+func _ready() -> void:
+	generate_tabs_and_slots()
 
 func handle_mouse_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
@@ -73,3 +77,9 @@ func play_trigger_animation() -> void:
 	
 	# Wait for animation to finish
 	await tween.finished
+
+func generate_tabs_and_slots() -> void:
+	directions.shuffle()
+	directions = directions.slice(0, 2)
+	print(directions)
+	pass
