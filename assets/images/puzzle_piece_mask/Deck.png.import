@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qygv0yifyo01"
-path="res://.godot/imported/puzzletei_bottom_edge.png-1af8b90c187ad631fdab31c93cf89757.ctex"
+uid="uid://ch3usycce50om"
+path="res://.godot/imported/Deck.png-cac77c8e173bd8092d1136346e37e78e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/puzzle_piece_mask/puzzletei_bottom_edge.png"
-dest_files=["res://.godot/imported/puzzletei_bottom_edge.png-1af8b90c187ad631fdab31c93cf89757.ctex"]
+source_file="res://assets/images/puzzle_piece_mask/Deck.png"
+dest_files=["res://.godot/imported/Deck.png-cac77c8e173bd8092d1136346e37e78e.ctex"]
 
 [params]
 

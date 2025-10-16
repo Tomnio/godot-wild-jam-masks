@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://djukxe3s212ao"]
+
+[ext_resource type="Script" uid="uid://dij64dr28gp1g" path="res://src/code/deck/deck.gd" id="1_6rnap"]
+[ext_resource type="Texture2D" uid="uid://ch3usycce50om" path="res://assets/images/puzzle_piece_mask/Deck.png" id="1_sdhao"]
+
+[node name="Deck" type="Node2D" groups=["deck"]]
+script = ExtResource("1_6rnap")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_sdhao")
+centered = false

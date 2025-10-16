@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://v11f3bueaa5b"
-path="res://.godot/imported/puzzletei_left_edge.png-cb42374ae9f4181eb21e24ae4028bcc7.ctex"
+uid="uid://bf7nyqajpa8fa"
+path="res://.godot/imported/puzzleteil_base.png-50641d68636a0d56980662e8cb20fcc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/puzzle_piece_mask/puzzletei_left_edge.png"
-dest_files=["res://.godot/imported/puzzletei_left_edge.png-cb42374ae9f4181eb21e24ae4028bcc7.ctex"]
+source_file="res://assets/images/puzzleteil_base.png"
+dest_files=["res://.godot/imported/puzzleteil_base.png-50641d68636a0d56980662e8cb20fcc2.ctex"]
 
 [params]
 

@@ -6,6 +6,17 @@ extends Node2D
 var empty_cell_scene := preload("res://scenes/empty_cell.tscn")
 
 var inner_piece_size := 104 
+var deck : Deck :
+	get:
+		if not deck or not is_instance_valid(deck) or not deck.is_inside_tree():
+			# Try to find the Deck in the scene tree
+			var deck_node = get_tree().get_first_node_in_group("deck")
+			if deck_node and is_instance_of(deck_node, Deck):
+				deck = deck_node
+			else:
+				push_warning("Deck node not found in scene tree")
+				return null
+		return deck
 
 func _ready() -> void:
 	PieceMaker.grid = self
@@ -17,15 +28,15 @@ func _ready() -> void:
 # ============================================================
 # PIECES
 # ============================================================
-func place_piece(grid_pos: Vector2i, piece: GridElement) -> void:
+func place_piece(grid_pos: Vector2i, piece: GridElement) -> bool:
 	if grid_pos in grid and not is_instance_of(grid[grid_pos], EmptyCell):
-		return
+		return false
 	
 	# Validate that the piece can connect to at least one neighbor
 	if is_instance_of(piece, PuzzlePiece):
 		if not can_place_piece_at(grid_pos, piece as PuzzlePiece):
 			print("Cannot place piece at", grid_pos, "- no valid connections")
-			return
+			return false
 	
 	# Remove the old empty cell if it exists
 	if grid_pos in grid and is_instance_of(grid[grid_pos], EmptyCell):
@@ -36,6 +47,10 @@ func place_piece(grid_pos: Vector2i, piece: GridElement) -> void:
 	connect_pieces(grid_pos, piece)
 	Score.count_score_from_piece(piece)
 	create_connected_empty_cells(piece.grid_index)
+	
+	deck.spawn_piece()
+	
+	return true
 
 func can_place_piece_at(grid_pos: Vector2i, piece: PuzzlePiece) -> bool:
 	# Check if at least one direction has a valid connection
@@ -104,7 +119,7 @@ func connect_pieces(grid_pos: Vector2i, piece: PuzzlePiece) -> void:
 						neighbor_piece.connected_pieces.append(piece)
 
 func place_starter_piece() -> void:
-	var piece := PieceMaker.create_piece()
+	var piece := PieceMaker.create_starter_piece()
 	add_to_grid(Vector2i.ZERO, piece)
 	create_connected_empty_cells(piece.grid_index)
 
@@ -185,6 +200,10 @@ func add_to_grid(grid_pos: Vector2i, grid_element: GridElement) -> bool:
 	grid[grid_pos] = grid_element
 	grid_element.grid_index = grid_pos
 	grid_element.position = Vector2(grid_pos) * inner_piece_size
+	
+	if grid_element.is_inside_tree():
+		grid_element.get_parent().remove_child(grid_element)
+	grid_element.is_part_of_grid = true
 	add_child(grid_element)
 	
 	# Connect to signal if it's a clickable piece

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dyqdb1tchq2j3"
-path="res://.godot/imported/puzzletei_right_edge.png-2886d726cd7875d006799426885260ae.ctex"
+path="res://.godot/imported/puzzleteil_right_edge.png-c7932505fd7b61e21872b3360ee64f4b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/puzzle_piece_mask/puzzletei_right_edge.png"
-dest_files=["res://.godot/imported/puzzletei_right_edge.png-2886d726cd7875d006799426885260ae.ctex"]
+source_file="res://assets/images/puzzle_piece_mask/puzzleteil_right_edge.png"
+dest_files=["res://.godot/imported/puzzleteil_right_edge.png-c7932505fd7b61e21872b3360ee64f4b.ctex"]
 
 [params]
 
