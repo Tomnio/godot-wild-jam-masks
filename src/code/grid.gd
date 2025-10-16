@@ -53,8 +53,12 @@ func place_piece(grid_pos: Vector2i, piece: GridElement) -> bool:
 	return true
 
 func can_place_piece_at(grid_pos: Vector2i, piece: PuzzlePiece) -> bool:
-	# Check if at least one direction has a valid connection
+	var has_at_least_one_connection = false
+	
+	# Check all four directions
 	for direction in piece.directions:
+		var connection_type = piece.directions[direction]
+		
 		var neighbor_pos: Vector2i
 		var required_opposite_direction: String
 		
@@ -74,18 +78,47 @@ func can_place_piece_at(grid_pos: Vector2i, piece: PuzzlePiece) -> bool:
 			_:
 				continue
 		
-		# Check if neighbor exists and has matching direction
+		# Check if neighbor exists
 		if grid.has(neighbor_pos):
 			var neighbor = grid[neighbor_pos]
+			
+			# If neighbor is a PuzzlePiece, validate the connection
 			if is_instance_of(neighbor, PuzzlePiece):
 				var neighbor_piece: PuzzlePiece = neighbor as PuzzlePiece
+				
+				# Get the neighbor's connection type in the opposite direction
 				if required_opposite_direction in neighbor_piece.directions:
-					return true  # Found at least one valid connection
+					var neighbor_connection_type = neighbor_piece.directions[required_opposite_direction]
+					
+					# Check if this piece's side is an edge
+					if connection_type == "e":
+						# Edge cannot connect to a piece
+						return false
+					
+					# Check if neighbor's side is an edge
+					if neighbor_connection_type == "e":
+						# Piece cannot connect to neighbor's edge
+						return false
+					
+					# Valid connections: tab-to-slot or slot-to-tab only
+					if (connection_type == "t" and neighbor_connection_type == "s") or \
+					   (connection_type == "s" and neighbor_connection_type == "t"):
+						has_at_least_one_connection = true
+					else:
+						# Invalid connection (tab-to-tab or slot-to-slot)
+						return false
 	
-	return false  # No valid connections found
+	# Must have at least one valid connection to place
+	return has_at_least_one_connection
 
 func connect_pieces(grid_pos: Vector2i, piece: PuzzlePiece) -> void:
 	for direction in piece.directions:
+		var connection_type = piece.directions[direction]
+		
+		# Skip edges - they can't connect
+		if connection_type == "e":
+			continue
+		
 		var neighbor_pos: Vector2i
 		var required_opposite_direction: String
 		
@@ -111,12 +144,17 @@ func connect_pieces(grid_pos: Vector2i, piece: PuzzlePiece) -> void:
 			if is_instance_of(neighbor, PuzzlePiece):
 				var neighbor_piece: PuzzlePiece = neighbor as PuzzlePiece
 				
-				# Only connect if neighbor has the opposite direction
+				# Check if neighbor has the opposite direction
 				if required_opposite_direction in neighbor_piece.directions:
-					# Make bidirectional connection
-					piece.connected_pieces.append(neighbor_piece)
-					if piece not in neighbor_piece.connected_pieces:
-						neighbor_piece.connected_pieces.append(piece)
+					var neighbor_connection_type = neighbor_piece.directions[required_opposite_direction]
+					
+					# Only connect if it's a valid tab-to-slot or slot-to-tab connection
+					if (connection_type == "t" and neighbor_connection_type == "s") or \
+					   (connection_type == "s" and neighbor_connection_type == "t"):
+						# Make bidirectional connection
+						piece.connected_pieces.append(neighbor_piece)
+						if piece not in neighbor_piece.connected_pieces:
+							neighbor_piece.connected_pieces.append(piece)
 
 func place_starter_piece() -> void:
 	var piece := PieceMaker.create_starter_piece()
@@ -142,8 +180,14 @@ func create_connected_empty_cells(grid_pos: Vector2i) -> void:
 	
 	var puzzle_piece: PuzzlePiece = piece as PuzzlePiece
 	
-	# Only create empty cells in directions where the piece has tabs
+	# Only create empty cells in directions where the piece has tabs or slots (not edges)
 	for direction in puzzle_piece.directions:
+		var connection_type = puzzle_piece.directions[direction]
+		
+		# Skip if this direction has an edge - edges can't connect
+		if connection_type == "e":
+			continue
+		
 		var neighbor_pos: Vector2i
 		
 		match direction:

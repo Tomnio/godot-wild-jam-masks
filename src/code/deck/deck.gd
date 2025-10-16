@@ -6,9 +6,8 @@ var deck : Array[PuzzlePiece] = []
 # TODO maybe add seed instead
 func _ready() -> void:
 	randomize()
-	generate_new_piece()
-	generate_new_piece()
-	generate_new_piece()
+	for i in range(50):
+		generate_new_piece()
 	spawn_piece()
 
 func generate_new_piece() -> void:
