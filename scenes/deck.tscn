@@ -9,3 +9,10 @@ script = ExtResource("1_6rnap")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_sdhao")
 centered = false
+
+[node name="DiscardButton" type="Button" parent="."]
+offset_left = -80.0
+offset_bottom = 31.0
+text = "Discard"
+
+[connection signal="button_down" from="DiscardButton" to="." method="_on_discard_button_button_down"]

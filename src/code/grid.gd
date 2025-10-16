@@ -53,7 +53,7 @@ func place_piece(grid_pos: Vector2i, piece: GridElement) -> bool:
 	return true
 
 func can_place_piece_at(grid_pos: Vector2i, piece: PuzzlePiece) -> bool:
-	var has_at_least_one_connection = false
+	var has_at_least_one_valid_connection = false
 	
 	# Check all four directions
 	for direction in piece.directions:
@@ -90,26 +90,32 @@ func can_place_piece_at(grid_pos: Vector2i, piece: PuzzlePiece) -> bool:
 				if required_opposite_direction in neighbor_piece.directions:
 					var neighbor_connection_type = neighbor_piece.directions[required_opposite_direction]
 					
-					# Check if this piece's side is an edge
-					if connection_type == "e":
-						# Edge cannot connect to a piece
+					# Check for INTERFERING connections (invalid combinations)
+					# Tab-to-tab is not allowed
+					if connection_type == "t" and neighbor_connection_type == "t":
 						return false
 					
-					# Check if neighbor's side is an edge
-					if neighbor_connection_type == "e":
-						# Piece cannot connect to neighbor's edge
+					# Tab-to-edge is not allowed
+					if connection_type == "t" and neighbor_connection_type == "e":
 						return false
 					
-					# Valid connections: tab-to-slot or slot-to-tab only
+					# Edge-to-tab is not allowed
+					if connection_type == "e" and neighbor_connection_type == "t":
+						return false
+					
+					# Edge-to-edge is not allowed
+					if connection_type == "e" and neighbor_connection_type == "e":
+						return true
+					
+					# Check for VALID connections (tab-to-slot or slot-to-tab)
 					if (connection_type == "t" and neighbor_connection_type == "s") or \
 					   (connection_type == "s" and neighbor_connection_type == "t"):
-						has_at_least_one_connection = true
-					else:
-						# Invalid connection (tab-to-tab or slot-to-slot)
-						return false
+						has_at_least_one_valid_connection = true
+					
+					# Note: slot-to-slot, edge-to-slot, and slot-to-edge are OK (non-interfering)
 	
 	# Must have at least one valid connection to place
-	return has_at_least_one_connection
+	return has_at_least_one_valid_connection
 
 func connect_pieces(grid_pos: Vector2i, piece: PuzzlePiece) -> void:
 	for direction in piece.directions:

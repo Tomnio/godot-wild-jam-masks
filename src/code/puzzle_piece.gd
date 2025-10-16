@@ -94,8 +94,22 @@ func play_trigger_animation() -> void:
 	await tween.finished
 
 func generate_connections() -> void:
+	# Generate all connections randomly first
 	for dir in directions:
 		directions[dir] = generate_tabs_and_slots()
+	
+	# Check if we have at least one tab or slot
+	var has_connection = false
+	for dir in directions:
+		if directions[dir] in ["t", "s"]:
+			has_connection = true
+			break
+	
+	# If all edges, force at least one random direction to be a tab or slot
+	if not has_connection:
+		var random_dir = directions.keys().pick_random()
+		directions[random_dir] = ["t", "s"].pick_random()
+	
 	print(directions)
 	pass
 
