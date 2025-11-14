@@ -8,6 +8,8 @@ var scoreboard : RichTextLabel
 @export var speed := 1
 var is_scoring := false
 
+
+
 func count_score_from_piece(piece: PuzzlePiece) -> void:
 	is_scoring = true
 	
@@ -24,10 +26,17 @@ func count_score_from_piece(piece: PuzzlePiece) -> void:
 	update_score_visuals(current_score)
 	is_scoring = false
 
+
+
+
+
+
 func init_scoreboard(scoreboard_node: RichTextLabel) -> void:
 	scoreboard = scoreboard_node
 	update_score_visuals(current_score)
 	pass
+
+
 
 func update_score_visuals(score: int) -> void:
 	if not scoreboard:

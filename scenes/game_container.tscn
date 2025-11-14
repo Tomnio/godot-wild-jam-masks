@@ -1,12 +1,13 @@
 [gd_scene load_steps=6 format=3 uid="uid://c5pcxr5fail1v"]
 
-[ext_resource type="Shader" uid="uid://ctqq4atbd40kp" path="res://scenes/background_balatroesque.gdshader" id="1_sfwqv"]
+[ext_resource type="Shader" uid="uid://duybl4dna7ygm" path="res://src/shaders/background_balatroesque.gdshader" id="1_pdfmr"]
 [ext_resource type="PackedScene" uid="uid://d31wsl7vxu1wk" path="res://scenes/grid.tscn" id="2_qs8ir"]
 [ext_resource type="PackedScene" uid="uid://cnindpnhm24j7" path="res://scenes/score_visuals.tscn" id="3_mqaqf"]
 [ext_resource type="PackedScene" uid="uid://djukxe3s212ao" path="res://scenes/deck.tscn" id="4_pdfmr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qs8ir"]
-shader = ExtResource("1_sfwqv")
+shader = ExtResource("1_pdfmr")
+shader_parameter/camera_zoom = 1.0
 shader_parameter/flow_speed = 0.8
 shader_parameter/turbulence = 1.5
 shader_parameter/detail_scale = 3.0
@@ -37,6 +38,7 @@ mouse_filter = 2
 [node name="Grid" parent="." instance=ExtResource("2_qs8ir")]
 
 [node name="ScoreVisuals" parent="." instance=ExtResource("3_mqaqf")]
+position = Vector2(-556, -312)
 
 [node name="Deck" parent="." instance=ExtResource("4_pdfmr")]
 position = Vector2(376, -280)

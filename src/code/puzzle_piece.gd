@@ -24,19 +24,6 @@ func _process(delta: float) -> void:
 	if not is_part_of_grid:
 		drag_logic(delta)
 
-
-
-func handle_mouse_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
-		print("Mouse clicked on area!")
-
-		# Optional: Check which button
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			print("Left click!")
-			piece_clicked.emit(grid_index)
-		elif event.button_index == MOUSE_BUTTON_RIGHT:
-			print("Right click!")
-
 func get_connected_pieces_in_range(search_range: int) -> Array[PuzzlePiece]:
 	var pieces_in_range: Array[PuzzlePiece] = []
 	

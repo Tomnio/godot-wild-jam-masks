@@ -1,5 +1,6 @@
 shader_type canvas_item;
 
+uniform highp float camera_zoom = 1.0;
 uniform highp float flow_speed = 0.8;
 uniform highp float turbulence = 1.5;
 uniform highp float detail_scale = 3.0;
@@ -67,8 +68,8 @@ vec4 effect(vec2 screenSize, vec2 screen_coords){
         time = TIME * flow_speed * 0.1;
     }
 
-    // Scale UV
-    uv *= detail_scale;
+    // Scale UV// Scale UV
+	uv *= detail_scale / camera_zoom;  // ← Add the division here
 
     // Apply curl noise for swirling motion
     highp vec2 curl = curl_noise(uv + time * 0.5);
@@ -121,6 +122,8 @@ vec4 effect(vec2 screenSize, vec2 screen_coords){
 }
 
 void fragment() {
-    vec2 uv = UV;
-    COLOR *= effect(TEXTURE_PIXEL_SIZE, uv);
+    vec2 screen_size = 1.0 / SCREEN_PIXEL_SIZE;
+    vec2 uv = FRAGCOORD.xy;
+
+    COLOR = effect(screen_size, uv);
 }
